@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hello</title>
+</head>
+
+<body>
+
+    <h4>Belajar POST Request Dengan AJAX Menggunakan Javascript</h4>
+
+
+      <table>
+            <tr>
+                <td>Nama</td>
+                <td><input type="text" id="nama" name="nama" placeholder="Nama Anda"/></td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td><input type="submit" value="Submit Nama" onclick="postData()" /></td>
+            </tr>
+        </table>
+
+
+    <div id="ajax-response" style="font-weight: bold;"></div>
+
+  <form name="formUmur">
+    <table>
+        <tr>
+            <td>Tahun Berapa anda lahir ? </td>
+            <td><input type="number" name="tahun" placeholder="Tahun Lahir"/></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td><input type="submit" value="Submit Umur" onclick="return getRequest()"/></td>
+        </tr>
+    </table>
+  </form>
+
+    <div id="ajax-umur" style="font-weight: bold;"></div>
+
+</body>
+    <script>
+
+        function getRequest(){
+            var tahun = document.formUmur.tahun.value;
+
+
+            if(tahun === '' || tahun === undefined){
+               alert('Errors Happen');
+            }else{
+               getData(tahun);
+            }
+
+            return false;
+
+        }
+
+        function getData(tahun){
+           var xhttp = myAjaxObject();
+
+           xhttp.open('GET','http://localhost/ajax-php2/ajax/umur-ku.php?tahun='+tahun,true);
+           xhttp.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+
+           xhttp.onreadystatechange = function () {
+             if(this.readyState === 4 && this.status === 200){
+                 document.getElementById('ajax-umur').innerHTML = this.responseText;
+             }
+           };
+
+           xhttp.send();
+        }
+
+
+
+        function  myAjaxObject(){
+            return new XMLHttpRequest();
+        }
+
+        function loadAjaxPOSTFromUrl(data,method){
+            var xhttp = myAjaxObject();
+
+           xhttp.open(method,'http://localhost/ajax-php2/ajax/response.php',true);
+           xhttp.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+
+            xhttp.onreadystatechange = function () {
+               if(this.readyState === 4 && this.status === 200){
+                 document.getElementById('ajax-response').innerHTML = this.responseText;
+               }
+            };
+
+            xhttp.send(data);
+
+        }
+
+        function postData(){
+            var nama = document.getElementById('nama').value;
+
+            if(nama === '' || nama === undefined){
+                alert('Nama Masih Kosong');
+                document.getElementById('ajax-response').innerHTML = '';
+            }else{
+                var encodedNama = encodeURIComponent(nama);
+                loadAjaxPOSTFromUrl("nama="+nama,'POST');
+            }
+
+
+
+        }
+
+    </script>
+</html>
